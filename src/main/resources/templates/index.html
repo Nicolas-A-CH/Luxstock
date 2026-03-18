@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Inicio - LuxStock</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; }
+        header {
+            background: #4a90e2;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 { font-size: 1.4rem; }
+        header a {
+            color: white;
+            text-decoration: none;
+            background: rgba(0,0,0,0.2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        header a:hover { background: rgba(0,0,0,0.35); }
+        main { padding: 2rem; }
+        .welcome { font-size: 1.2rem; color: #333; }
+        .welcome span { font-weight: bold; color: #4a90e2; }
+    </style>
 </head>
 <body>
-
+<header>
+    <h1>LuxStock</h1>
+    <div>
+        <span sec:authentication="name"></span> &nbsp;
+        <a th:href="@{/logout}">Cerrar sesión</a>
+    </div>
+</header>
+<main>
+    <p class="welcome">
+        Bienvenido, <span sec:authentication="name"></span>.
+    </p>
+</main>
 </body>
 </html>

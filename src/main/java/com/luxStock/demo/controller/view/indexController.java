@@ -8,6 +8,6 @@ public class indexController {
 
     @GetMapping("/")
     public String viewIndexPage(){
-        return "index.htm";
+        return "index";
     }
 }
