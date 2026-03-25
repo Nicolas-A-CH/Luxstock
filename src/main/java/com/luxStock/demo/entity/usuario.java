@@ -1,22 +1,27 @@
 package com.luxStock.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "usuarios")
-@Data
-public class Usuario{
-
+public class Usuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_usuario")
+    private Integer idUsuario;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, length = 100)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String password;
 
-    private String rol; // ej: "ROLE_USER", "ROLE_ADMIN"
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_empleado")
+    private Empleado empleado;
 }
