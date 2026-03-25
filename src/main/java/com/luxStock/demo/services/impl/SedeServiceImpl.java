@@ -1,0 +1,33 @@
+package com.luxStock.demo.services.impl;
+
+import com.luxStock.demo.dto.SedeDTO;
+import com.luxStock.demo.entity.Sede;
+import com.luxStock.demo.repository.SedeRepository;
+import com.luxStock.demo.services.SedeService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class SedeServiceImpl implements SedeService {
+
+    private final SedeRepository sedeRepository;
+
+    public SedeServiceImpl(SedeRepository sedeRepository) {
+        this.sedeRepository = sedeRepository;
+    }
+
+    @Override
+    public void guardarSede(SedeDTO sedeDTO) {
+        Sede sedeEntity = new Sede();
+
+        // Si el idSede no es null, se tratará de una actualización; si es null, de una creación
+        sedeEntity.setIdSede(sedeDTO.getIdSede());
+        sedeEntity.setNombre(sedeDTO.getNombre());
+        sedeEntity.setDireccion(sedeDTO.getDireccion());
+        sedeEntity.setCiudad(sedeDTO.getCiudad());
+        sedeEntity.setTelefono(sedeDTO.getTelefono());
+
+        // Guardamos en la base de datos
+        sedeRepository.save(sedeEntity);
+
+    }
+}
