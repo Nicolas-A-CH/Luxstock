@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+
+    <div class="content-wrapper">
+
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Registro de Sede</h1>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2"> <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Datos de la Nueva Sede</h3>
+                        </div>
+
+                        <form th:action="@{/sedes/guardar}" th:object="${sede}" method="post">
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <label for="nombre">Nombre de la Sede</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                        </div>
+                                        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Ej: Sede Central LuxBar" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="ciudad">Ciudad</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                                </div>
+                                                <input type="text" id="ciudad" th:field="*{ciudad}" class="form-control" placeholder="Ej: Bogotá" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="telefono">Teléfono</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                </div>
+                                                <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" placeholder="Ej: +57 300..." required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="direccion">Dirección Exacta</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-road"></i></span>
+                                        </div>
+                                        <input type="text" id="direccion" th:field="*{direccion}" class="form-control" placeholder="Ej: Calle 123 #45-67" required>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Guardar Sede
+                                </button>
+                                <a th:href="@{/sedes}" class="btn btn-default float-right">
+                                    Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</body>
+</html>
