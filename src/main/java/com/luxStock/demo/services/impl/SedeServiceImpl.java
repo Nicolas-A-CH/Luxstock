@@ -6,6 +6,9 @@ import com.luxStock.demo.repository.SedeRepository;
 import com.luxStock.demo.services.SedeService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class SedeServiceImpl implements SedeService {
 
@@ -29,5 +32,18 @@ public class SedeServiceImpl implements SedeService {
         // Guardamos en la base de datos
         sedeRepository.save(sedeEntity);
 
+    }
+
+    @Override
+    public List<SedeDTO> obtenerTodasLasSedesDTO() {
+        List<Sede> sedes = sedeRepository.findAll();
+
+        return sedes.stream().map(sede -> new SedeDTO(
+                sede.getIdSede(),
+                sede.getNombre(),
+                sede.getDireccion(),
+                sede.getCiudad(),
+                sede.getTelefono()
+        )).collect(Collectors.toList());
     }
 }

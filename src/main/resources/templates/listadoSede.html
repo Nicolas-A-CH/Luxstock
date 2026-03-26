@@ -36,30 +36,22 @@
               <table class="table table-hover text-nowrap">
                 <thead class="thead-light">
                 <tr>
-                  <th>ID</th>
                   <th>Nombre</th>
-                  <th>Email</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
+                  <th>Direccion</th>
+                  <th>Ciudad</th>
+                  <th>Telefono</th>
                   <th class="text-center">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="usuario : ${usuarios}">
-                  <td th:text="${usuario.id}">1</td>
-                  <td th:text="${usuario.nombre}">Juan Pérez</td>
-                  <td th:text="${usuario.email}">juan@example.com</td>
-                  <td>
-                    <span class="badge badge-info" th:text="${usuario.rol}">Admin</span>
-                  </td>
-                  <td>
-                                          <span class="badge"
-                                                th:classappend="${usuario.activo} ? 'badge-success' : 'badge-danger'"
-                                                th:text="${usuario.activo} ? 'Activo' : 'Inactivo'">
-                                          </span>
-                  </td>
+                <tr th:each="sede : ${sedes}">
+                  <td th:text="${sede.nombre}"></td>
+                  <td th:text="${sede.direccion}"></td>
+                  <td th:text="${sede.ciudad}"></td>
+                  <td th:text="${sede.telefono}"></td>
+
                   <td class="text-center">
-                    <a th:href="@{/usuarios/editar/{id}(id=${usuario.id})}" class="btn btn-warning btn-sm">
+                    <a th:href="@{/usuarios/editar/{id}(id=${sede.idSede})}" class="btn btn-warning btn-sm">
                       <i class="fas fa-edit"></i>
                     </a>
                     <button class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar usuario?')">
