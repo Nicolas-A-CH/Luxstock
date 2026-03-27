@@ -1,39 +1,93 @@
 # Mapeo de Base de Datos - Sistema de Gestión de Bar
+
 ## Tecnologías Utilizadas
 
-* **Java** * **JPA / Hibernate:** Para el mapeo objeto-relacional (ORM).
-* **Lombok:** Para reducir el código repetitivo (boilerplate) como Getters, Setters y constructores.
-* **Jakarta Persistence:** Especificación estándar para las anotaciones de base de datos (`jakarta.persistence.*`).
-* springboot v 4
-* java v 17
-* admin lte
+* **Java 17**
+* **Spring Boot 3+**
+* **JPA / Hibernate:** Para el mapeo objeto-relacional (ORM).
+* **Lombok:** Para reducir el código repetitivo (boilerplate).
+* **Jakarta Persistence:** Especificación estándar para las anotaciones de base de datos.
+* **Thymeleaf:** Motor de plantillas para el frontend.
+* **AdminLTE 3:** Plantilla base para el diseño del panel administrativo.
+* **Webjars:** Gestión de librerías cliente (Bootstrap, jQuery, FontAwesome, SweetAlert2).
 
 ---
-## Estructura base de datos
 
-Este seccion del documento explica la estructura y las decisiones de diseño tomadas para el mapeo de la base de datos del sistema de gestión de bar, utilizando **JPA (Jakarta Persistence API)** y **Lombok**.
+## Estructura de Base de Datos
+
+Este sección del documento explica la estructura y las decisiones de diseño tomadas para el mapeo de la base de datos del sistema de gestión de bar.
 
 ### Estructura de Entidades y Relaciones
 
 El modelo de datos está dividido lógicamente en tres módulos principales:
 
 #### 1. Gestión de Personal y Acceso
-* **`Sede`** (`sedes`): Representa las sucursales del bar. Entidad independiente.
-* **`Rol`** (`roles`): Define los niveles de acceso (Administrador, Cajero, Mesero). Entidad independiente.
+* **`Sede`** (`sedes`): Representa las sucursales del bar.
+* **`Rol`** (`roles`): Define los niveles de acceso (Administrador, Cajero, Mesero).
 * **`Empleado`** (`empleados`): Contiene la información del personal.
-    * Relación **ManyToOne** con `Rol`.
-    * Relación **ManyToOne** con `Sede`.
 * **`Usuario`** (`usuarios`): Credenciales de acceso al sistema.
-    * Relación **OneToOne** con `Empleado`.
 
 #### 2. Gestión de Productos e Inventario
-* **`Producto`** (`productos`): Catálogo de bebidas, comidas, etc. Entidad independiente.
+* **`Producto`** (`productos`): Catálogo de bebidas, comidas, etc.
 * **`Inventario`** (`inventario`): Control de stock por sede.
-    * Relación **ManyToOne** con `Producto`.
-    * Relación **ManyToOne** con `Sede`.
 
 #### 3. Operaciones (Pedidos y Ventas)
-* **`Pedido`** y **`DetallePedido`**: Gestión de las órdenes tomadas por los meseros.
-    * Relaciones **ManyToOne** hacia `Empleado`, `Sede`, `Pedido` y `Producto`.
+* **`Pedido`** y **`DetallePedido`**: Gestión de las órdenes.
 * **`Venta`** y **`DetalleVenta`**: Registro de facturación en caja.
-    * Relaciones **ManyToOne** hacia `Empleado`, `Sede`, `Venta` y `Producto`.
+
+---
+
+## Implementación de Interfaz (Thymeleaf + AdminLTE)
+
+Para mantener la consistencia visual y facilitar el mantenimiento, se utiliza un sistema de fragmentos con Thymeleaf localizado en `src/main/resources/templates/fragments/layout.html`.
+
+### Fragmentos Disponibles
+
+1.  **`head`**: Incluye todos los estilos CSS necesarios (AdminLTE, Bootstrap, FontAwesome, SweetAlert2).
+2.  **`menu`**: Define la barra lateral (sidebar) con la navegación principal.
+3.  **`scripts`**: Incluye las librerías JavaScript requeridas al final del cuerpo (jQuery, Bootstrap Bundle, SweetAlert2, AdminLTE JS).
+
+### Cómo usar la plantilla en una nueva página
+
+Para crear una nueva vista utilizando la estructura base de AdminLTE, sigue este esquema:
+
+```html
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}">
+    <!-- Puedes añadir estilos adicionales aquí si es necesario -->
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside th:replace="~{fragments/layout :: menu}"></aside>
+
+        <!-- Contenido Principal -->
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>Título de la Página</h1>
+            </section>
+            <section class="content">
+                <div class="container-fluid">
+                    <!-- Tu contenido aquí -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+    <!-- Tus scripts específicos aquí -->
+</body>
+</html>
+```
+
+### Librerías Incluidas (vía Webjars)
+
+Las siguientes dependencias están configuradas en el proyecto y se cargan automáticamente a través del fragmento `head` y `scripts`:
+
+*   **AdminLTE 3.2.0**: Framework de UI.
+*   **FontAwesome 6.4.0**: Iconos.
+*   **Bootstrap 5.3.8**: Layout y componentes.
+*   **SweetAlert2 11.26.17**: Notificaciones y alertas modales.
+*   **jQuery 3.6.4**: Requerido por AdminLTE y plugins.
