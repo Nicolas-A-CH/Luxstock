@@ -46,4 +46,21 @@ public class SedeServiceImpl implements SedeService {
                 sede.getTelefono()
         )).collect(Collectors.toList());
     }
+
+    @Override
+    public SedeDTO obtenerSedePorId(Integer id) {
+        // Buscamos la sede, si no existe devolvemos null o lanzamos una excepción
+        Sede sede = sedeRepository.findById(id).orElse(null);
+
+        if (sede != null) {
+            return new SedeDTO(
+                    sede.getIdSede(),
+                    sede.getNombre(),
+                    sede.getDireccion(),
+                    sede.getCiudad(),
+                    sede.getTelefono()
+            );
+        }
+        return null;
+    }
 }

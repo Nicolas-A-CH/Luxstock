@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .loginPage("/login")
 
                         // Y esta le dice a dónde ir después de un login exitoso
-                        .defaultSuccessUrl("/dashboard", true)
+                        .defaultSuccessUrl("/luxbar/sedes", true)
                         .permitAll()
                 );
 
