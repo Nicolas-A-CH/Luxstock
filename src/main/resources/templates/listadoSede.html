@@ -2,8 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head}"></head>
 <body class="hold-transition sidebar-mini">
-<aside th:replace="~{fragments/layout :: menu}"></aside>
   <div class="wrapper">
+    <!-- Navbar superior con el botón de menú -->
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <!-- Sidebar lateral -->
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+
     <div class="content-wrapper">
       <section class="content-header">
         <div class="container-fluid">
@@ -54,7 +59,7 @@
                     <a th:href="@{/luxbar/editar sede/{id}(id=${sede.idSede})}" class="btn btn-warning btn-sm">
                       <i class="fas fa-edit"></i>
                     </a>
-                    <button class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar usuario?')">
+                    <button class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar sede?')">
                       <i class="fas fa-trash"></i>
                     </button>
                   </td>
@@ -67,5 +72,7 @@
       </section>
     </div>
   </div>
+  <!-- Scripts necesarios para el funcionamiento de AdminLTE -->
+  <div th:replace="~{fragments/layout :: scripts}"></div>
 </body>
 </html>

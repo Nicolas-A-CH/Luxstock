@@ -26,7 +26,7 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/luxbar/sedes", true)
+                        .defaultSuccessUrl("/luxbar/dashboard", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

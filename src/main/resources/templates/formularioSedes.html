@@ -2,10 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head}"></head>
 <body class="hold-transition sidebar-mini">
-<aside th:replace="~{fragments/layout :: menu}"></aside>
-<div class="wrapper">
-    <div class="content-wrapper">
 
+<div class="wrapper">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+    <div class="content-wrapper">
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">

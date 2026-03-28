@@ -19,6 +19,11 @@ public class viewController {
     private final SedeService sedeService;
     private final UsuarioService usuarioService;
 
+    @GetMapping("/dashboard")
+    public String viewDashboardPage(){
+        return "dashboard";
+    }
+
     @GetMapping("/usuarios")
     public String viewIndexPage(Model model){
         model.addAttribute("usuariosEmpleados", usuarioService.obtenerTodosLosUsuariosDTO());

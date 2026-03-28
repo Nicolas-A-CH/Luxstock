@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <!-- Navbar superior con el botón de menú -->
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <!-- Sidebar lateral -->
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Panel de Control (Dashboard)</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <!-- Sección central: En construcción -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-outline card-warning">
+                            <div class="card-header">
+                                <h3 class="card-title">Resumen de Actividad</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body text-center py-5">
+                                <div class="mb-4">
+                                    <i class="fas fa-hard-hat fa-5x text-warning"></i>
+                                </div>
+                                <h2 class="font-weight-bold">Módulo en Construcción</h2>
+                                <p class="text-muted lead">
+                                    Estamos trabajando para ofrecerte las mejores gráficas y reportes detallados de tu negocio.
+                                    <br>Pronto podrás visualizar aquí las métricas más importantes.
+                                </p>
+                                <div class="progress progress-sm mt-4 active" style="max-width: 500px; margin: 0 auto;">
+                                    <div class="progress-bar bg-warning progress-bar-striped" role="progressbar"
+                                         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                        <span class="sr-only">60% Completado</span>
+                                    </div>
+                                </div>
+                                <p class="mt-2 text-sm text-muted">Progreso del Dashboard: 60%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- Scripts necesarios para el funcionamiento de AdminLTE -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
