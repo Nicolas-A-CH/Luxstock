@@ -37,6 +37,29 @@ El modelo de datos está dividido lógicamente en tres módulos principales:
 
 ---
 
+## Configuración Inicial del Sistema
+
+### Creación del Usuario Administrador
+
+Para que el sistema sea funcional por primera vez, se requiere la existencia de al menos un Rol de Administrador, una Sede y un Usuario con dichos privilegios. Debido a que las contraseñas están encriptadas con **BCrypt**, no se recomienda insertarlas manualmente vía SQL plano sin la función de encriptación adecuada.
+
+Sigue estos pasos para la configuración inicial:
+
+1. **Roles y Sedes**: Asegúrate de que las tablas `roles` y `sedes` tengan al menos un registro.
+   ```sql
+   INSERT INTO roles (nombre) VALUES ('ADMINISTRADOR');
+   INSERT INTO sedes (nombre, direccion) VALUES ('Sede Principal', 'Calle Falsa 123');
+   ```
+
+2. **Registro vía Interfaz**: Una vez que el sistema esté corriendo, utiliza el formulario de **Registro de Usuarios** (`/luxbar/crear usuario`) para crear el primer administrador. El sistema se encargará de:
+   - Validar que el documento (CC) tenga entre 5 y 10 dígitos.
+   - Encriptar la contraseña automáticamente.
+   - Vincular al empleado con su usuario y sede correspondientes.
+
+3. **Seguridad**: El nombre de usuario y la contraseña definidos en este paso serán los que se utilicen para el acceso inicial al panel administrativo.
+
+---
+
 ## Implementación de Interfaz (Thymeleaf + AdminLTE)
 
 Para mantener la consistencia visual y facilitar el mantenimiento, se utiliza un sistema de fragmentos con Thymeleaf localizado en `src/main/resources/templates/fragments/layout.html`.
