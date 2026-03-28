@@ -21,7 +21,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/webjars/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        // Recursos estáticos, login y acceso denegado permitidos para todos
+                        .requestMatchers("/", "/login", "/403", "/webjars/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        
+                        // Restricciones de administración (Solo ADMINISTRADOR)
+                        .requestMatchers("/luxbar/usuarios/**", "/luxbar/crear usuario/**", "/luxbar/editar usuario/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/luxbar/sedes/**", "/luxbar/crear sede/**", "/luxbar/editar sede/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/guardarusuario/**", "/api/guardarSede/**").hasRole("ADMINISTRADOR")
+
+                        // Dashboard y otras rutas comunes permitidas para cualquier usuario logueado
+                        .requestMatchers("/luxbar/dashboard").authenticated()
+                        
+                        // Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -32,6 +43,9 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/403") // Redirigir a la nueva vista de error sin cerrar sesión
                 );
 
         return http.build();

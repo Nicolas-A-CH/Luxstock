@@ -8,10 +8,15 @@ public class indexController {
 
     @GetMapping("/")
     public String viewIndexPage(){
-        return "index.html";
+        return "index";
     }
     @GetMapping("/login")
     public String viewLogigPage() {
-        return "login.html";
+        return "login";
+    }
+
+    @GetMapping("/403")
+    public String viewAccessDeniedPage() {
+        return "403";
     }
 }
