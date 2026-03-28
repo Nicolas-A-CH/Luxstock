@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formUsuarioEmpleado');
+    const idEmpleado = document.getElementById('idEmpleado'); // Campo oculto con el ID del empleado
 
     // Botones para ver contraseña
     const togglePassword = document.getElementById('togglePassword');
@@ -7,12 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleValidatePassword = document.getElementById('toggleValidatePassword');
     const validatepassword = document.getElementById('validatepassword');
 
+    const isEdit = idEmpleado && idEmpleado.value !== '';
+
     if (togglePassword) {
         togglePassword.addEventListener('click', function() {
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
         });
     }
 
@@ -20,8 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleValidatePassword.addEventListener('click', function() {
             const type = validatepassword.getAttribute('type') === 'password' ? 'text' : 'password';
             validatepassword.setAttribute('type', type);
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
         });
     }
 
@@ -49,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         }
 
-        // --- VALIDACIÓN DOCUMENTO (5-10 caracteres, solo números, no duplicado) ---
+        // --- VALIDACIÓN DOCUMENTO ---
         const regexDocumento = /^\d{5,10}$/;
         if (documento.value.trim() === ''){
             mostrarError(documento, 'El documento es obligatorio.');
@@ -58,16 +63,19 @@ document.addEventListener('DOMContentLoaded', function() {
             mostrarError(documento, 'El documento debe tener entre 5 y 10 números.');
             isValid = false;
         } else {
-            // Validar si ya existe en la BD
-            try {
-                const response = await fetch(`/api/validar-documento?documento=${documento.value.trim()}`);
-                const existe = await response.json();
-                if (existe) {
-                    mostrarError(documento, 'Este documento ya está registrado.');
-                    isValid = false;
+            // Solo validar duplicado si es un nuevo registro o si el documento cambió
+            const originalDocumento = documento.getAttribute('data-original');
+            if (!isEdit || documento.value.trim() !== originalDocumento) {
+                try {
+                    const response = await fetch(`/api/validar-documento?documento=${documento.value.trim()}`);
+                    const existe = await response.json();
+                    if (existe) {
+                        mostrarError(documento, 'Este documento ya está registrado.');
+                        isValid = false;
+                    }
+                } catch (error) {
+                    console.error('Error al validar documento:', error);
                 }
-            } catch (error) {
-                console.error('Error al validar documento:', error);
             }
         }
 
@@ -85,20 +93,26 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         }
 
-        if (password.value.trim() === '') {
-            mostrarError(password, 'La contraseña es obligatoria.');
-            isValid = false;
-        } else if (password.value.length < 8) {
-            mostrarError(password, 'La contraseña debe tener al menos 8 caracteres.');
-            isValid = false;
-        }
+        // --- VALIDACIÓN CONTRASEÑA (Solo si no es edición O si se ha escrito algo) ---
+        const passwordValue = password.value.trim();
+        const validatePasswordValue = validatepassword.value.trim();
 
-        if (validatepassword.value.trim() === '') {
-            mostrarError(validatepassword, 'Debe repetir la contraseña.');
-            isValid = false;
-        } else if (password.value !== validatepassword.value) {
-            mostrarError(validatepassword, 'Las contraseñas no coinciden.');
-            isValid = false;
+        if (!isEdit || passwordValue !== '') {
+            if (passwordValue === '') {
+                mostrarError(password, 'La contraseña es obligatoria.');
+                isValid = false;
+            } else if (passwordValue.length < 8) {
+                mostrarError(password, 'La contraseña debe tener al menos 8 caracteres.');
+                isValid = false;
+            }
+
+            if (validatePasswordValue === '') {
+                mostrarError(validatepassword, 'Debe repetir la contraseña.');
+                isValid = false;
+            } else if (passwordValue !== validatePasswordValue) {
+                mostrarError(validatepassword, 'Las contraseñas no coinciden.');
+                isValid = false;
+            }
         }
 
         if (isValid) {
@@ -112,8 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.ok) {
                         Swal.fire({
                             icon: 'success',
-                            title: '¡Usuario Registrado!',
-                            text: 'El usuario se ha guardado con éxito.',
+                            title: isEdit ? '¡Usuario Actualizado!' : '¡Usuario Registrado!',
+                            text: isEdit ? 'El usuario se ha actualizado con éxito.' : 'El usuario se ha guardado con éxito.',
                             confirmButtonText: 'Aceptar',
                             confirmButtonColor: '#007bff'
                         }).then((result) => {
@@ -125,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'Hubo un error al guardar el usuario en el servidor.',
+                            text: 'Hubo un error al procesar la solicitud.',
                             confirmButtonText: 'Entendido',
                             confirmButtonColor: '#dc3545'
                         });
@@ -146,22 +160,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function mostrarError(inputElement, mensaje) {
         inputElement.classList.add('is-invalid');
-        // Si el input está dentro de un input-group, el feedback suele ser hermano del input-group o hijo
-        let feedbackDiv = inputElement.nextElementSibling;
+        let container = inputElement.closest('.mb-3') || inputElement.parentElement;
+        let feedbackDiv = container.querySelector('.invalid-feedback');
         
-        // Manejo especial para input-group con el botón de ver contraseña
-        if (inputElement.parentElement.classList.contains('input-group')) {
-             feedbackDiv = inputElement.parentElement.querySelector('.invalid-feedback');
-             if (!feedbackDiv) {
-                feedbackDiv = document.createElement('div');
-                feedbackDiv.className = 'invalid-feedback';
-                inputElement.parentElement.appendChild(feedbackDiv);
-             }
+        if (!feedbackDiv) {
+            feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'invalid-feedback';
+            container.appendChild(feedbackDiv);
         }
 
-        if (feedbackDiv && feedbackDiv.classList.contains('invalid-feedback')) {
-            feedbackDiv.textContent = mensaje;
-            feedbackDiv.style.display = 'block';
-        }
+        feedbackDiv.textContent = mensaje;
+        feedbackDiv.style.display = 'block';
     }
 });

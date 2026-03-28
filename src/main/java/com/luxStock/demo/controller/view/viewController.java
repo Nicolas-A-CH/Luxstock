@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -35,16 +33,31 @@ public class viewController {
         return "formularioUsuarios";
     }
 
+    @GetMapping("/editar usuario/{id}")
+    public String viewFormularioEdicionUsuarioPage(@PathVariable Integer id, Model model){
+        UsuarioEmpleadoDTO usuarioEmpleadoDTO = usuarioService.obtenerUsuarioPorId(id);
+        if(usuarioEmpleadoDTO != null) {
+            model.addAttribute("usuarioDTO", usuarioEmpleadoDTO);
+            model.addAttribute("roles", usuarioService.obtenerTodosLosRoles());
+            model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
+        } else {
+            return "redirect:/luxbar/usuarios";
+        }
+        return "formularioUsuarios";
+    }
+
     @GetMapping("/sedes")
     public String viewSedesPage(Model model){
         model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
         return "listadoSede";
     }
+
     @GetMapping("/crear sede")
     public String viewformularioSedePage(Model model){
         model.addAttribute("sede", new Sede());
         return "formularioSedes";
     }
+
     @GetMapping("/editar sede/{id}")
     public String viewFormularioEdicionSedePage(@PathVariable Integer id, Model model){
         SedeDTO sedeDTO = sedeService.obtenerSedePorId(id);

@@ -31,8 +31,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public void guardarUsuarioEmpleado(UsuarioEmpleadoDTO dto) {
-        Empleado empleado = new Empleado();
-        // Quitamos la asignación manual del ID para que lo maneje la DB con @GeneratedValue
+        Empleado empleado;
+        if (dto.getIdEmpleado() != null) {
+            empleado = empleadoRepository.findById(dto.getIdEmpleado()).orElseThrow();
+        } else {
+            empleado = new Empleado();
+        }
+
         empleado.setNombre(dto.getNombre());
         empleado.setApellido(dto.getApellido());
         empleado.setDocumento(dto.getDocumento());
@@ -44,14 +49,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         empleado.setRol(rol);
         empleado.setSede(sede);
 
-        // Al guardar, Hibernate generará el ID automáticamente
         empleado = empleadoRepository.save(empleado);
 
-        Usuario usuario = new Usuario();
+        Usuario usuario = usuarioRepository.findByEmpleado(empleado).orElse(new Usuario());
         usuario.setUsername(dto.getUsername());
-        usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+        
+        // Solo actualizamos la contraseña si se proporcionó una nueva
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        
         usuario.setEmpleado(empleado);
-
         usuarioRepository.save(usuario);
     }
 
@@ -71,6 +79,18 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public boolean existePorDocumento(String documento) {
         return empleadoRepository.existsByDocumento(documento);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UsuarioEmpleadoDTO obtenerUsuarioPorId(Integer id) {
+        Empleado empleado = empleadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+        
+        Usuario usuario = usuarioRepository.findByEmpleado(empleado)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado para este empleado"));
+        
+        return convertirA_DTO(usuario);
     }
 
     private UsuarioEmpleadoDTO convertirA_DTO(Usuario usuario) {

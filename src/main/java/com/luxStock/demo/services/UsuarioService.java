@@ -9,4 +9,5 @@ public interface UsuarioService {
     List<Rol> obtenerTodosLosRoles();
     List<UsuarioEmpleadoDTO> obtenerTodosLosUsuariosDTO();
     boolean existePorDocumento(String documento);
+    UsuarioEmpleadoDTO obtenerUsuarioPorId(Integer id);
 }

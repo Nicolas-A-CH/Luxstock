@@ -9,7 +9,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h2 th:text="${usuarioDTO.username != null ? 'Editar Usuario' : 'Crear Usuario'}">Crear Usuario</h2>
+                        <h2 th:text="${usuarioDTO.idEmpleado != null ? 'Editar Usuario' : 'Crear Usuario'}">Crear Usuario</h2>
                     </div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                             </div>
                             <form id="formUsuarioEmpleado" th:action="@{/api/guardarusuario}" th:object="${usuarioDTO}" method="post" novalidate>
                                 <div class="card-body">
-                                    <input type="hidden" th:field="*{idEmpleado}">
+                                    <input type="hidden" id="idEmpleado" th:field="*{idEmpleado}">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="nombre">Nombre</label>
@@ -59,7 +59,8 @@
                                                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                                                 </div>
                                                 <input type="text" id="documento" th:field="*{documento}"
-                                                       class="form-control" placeholder="Ej. 1234567890">
+                                                       class="form-control" placeholder="Ej. 1234567890"
+                                                       th:attr="data-original=*{documento}">
                                                 <div class="invalid-feedback"></div>
                                             </div>
                                         </div>
@@ -111,7 +112,8 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                                 </div>
-                                                <input type="password" id="password" th:field="*{password}" class="form-control">
+                                                <input type="password" id="password" th:field="*{password}" class="form-control"
+                                                       th:placeholder="${usuarioDTO.idEmpleado != null ? 'Dejar en blanco para no cambiar' : ''}">
                                                 <div class="input-group-append">
                                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                                         <i class="fas fa-eye"></i>
@@ -121,12 +123,17 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label for="password">Repetir contraseña</label>
+                                            <label for="validatepassword">Repetir contraseña</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                                 </div>
                                                 <input type="password" id="validatepassword" class="form-control">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" id="toggleValidatePassword">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
                                                 <div class="invalid-feedback"></div>
                                             </div>
                                         </div>
