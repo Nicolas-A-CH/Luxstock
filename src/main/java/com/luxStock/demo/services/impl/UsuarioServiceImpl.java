@@ -32,7 +32,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     public void guardarUsuarioEmpleado(UsuarioEmpleadoDTO dto) {
         Empleado empleado = new Empleado();
-        empleado.setIdEmpleado(dto.getIdEmpleado());
+        // Quitamos la asignación manual del ID para que lo maneje la DB con @GeneratedValue
         empleado.setNombre(dto.getNombre());
         empleado.setApellido(dto.getApellido());
         empleado.setDocumento(dto.getDocumento());
@@ -44,10 +44,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         empleado.setRol(rol);
         empleado.setSede(sede);
 
+        // Al guardar, Hibernate generará el ID automáticamente
         empleado = empleadoRepository.save(empleado);
 
         Usuario usuario = new Usuario();
-        usuario.setIdUsuario(empleado.getIdEmpleado());
         usuario.setUsername(dto.getUsername());
         usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
         usuario.setEmpleado(empleado);
@@ -66,6 +66,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.findAll().stream()
                 .map(this::convertirA_DTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existePorDocumento(String documento) {
+        return empleadoRepository.existsByDocumento(documento);
     }
 
     private UsuarioEmpleadoDTO convertirA_DTO(Usuario usuario) {

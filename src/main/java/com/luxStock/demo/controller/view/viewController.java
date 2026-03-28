@@ -35,12 +35,6 @@ public class viewController {
         return "formularioUsuarios";
     }
 
-    @PostMapping("/guardar usuario")
-    public String guardarUsuario(@ModelAttribute UsuarioEmpleadoDTO usuarioDTO) {
-        usuarioService.guardarUsuarioEmpleado(usuarioDTO);
-        return "redirect:/luxbar/usuarios";
-    }
-
     @GetMapping("/sedes")
     public String viewSedesPage(Model model){
         model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
