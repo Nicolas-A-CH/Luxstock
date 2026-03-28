@@ -1,13 +1,17 @@
 package com.luxStock.demo.controller.view;
 
 import com.luxStock.demo.dto.SedeDTO;
+import com.luxStock.demo.dto.UsuarioEmpleadoDTO;
 import com.luxStock.demo.entity.Sede;
 import com.luxStock.demo.services.SedeService;
+import com.luxStock.demo.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -15,14 +19,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class viewController {
     private final SedeService sedeService;
+    private final UsuarioService usuarioService;
+
     @GetMapping("/usuarios")
-    public String viewIndexPage(){
+    public String viewIndexPage(Model model){
+        model.addAttribute("usuariosEmpleados", usuarioService.obtenerTodosLosUsuariosDTO());
         return "listadoUsuario";
     }
+
     @GetMapping("/crear usuario")
-    public String viewFormularioUsuarioPage(){
-        return "listadoUsuario";
+    public String viewFormularioUsuarioPage(Model model){
+        model.addAttribute("usuarioDTO", new UsuarioEmpleadoDTO());
+        model.addAttribute("roles", usuarioService.obtenerTodosLosRoles());
+        model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
+        return "formularioUsuarios";
     }
+
+    @PostMapping("/guardar usuario")
+    public String guardarUsuario(@ModelAttribute UsuarioEmpleadoDTO usuarioDTO) {
+        usuarioService.guardarUsuarioEmpleado(usuarioDTO);
+        return "redirect:/luxbar/usuarios";
+    }
+
     @GetMapping("/sedes")
     public String viewSedesPage(Model model){
         model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
@@ -35,17 +53,12 @@ public class viewController {
     }
     @GetMapping("/editar sede/{id}")
     public String viewFormularioEdicionSedePage(@PathVariable Integer id, Model model){
-        // Buscamos los datos actuales de la sede
         SedeDTO sedeDTO = sedeService.obtenerSedePorId(id);
-
-        // Pasamos la sede encontrada a la vista (si no existe, mandamos una vacía por seguridad)
         if(sedeDTO != null) {
             model.addAttribute("sede", sedeDTO);
         } else {
-            return "redirect:/luxbar/sedes"; // Si intentan editar un ID que no existe, los devolvemos a la lista
+            return "redirect:/luxbar/sedes";
         }
-
-        // Retornamos exactamente la misma vista HTML
         return "formularioSedes";
     }
 }

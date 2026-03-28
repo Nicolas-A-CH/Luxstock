@@ -1,10 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body class="hold-transition sidebar-mini">
+<aside th:replace="~{fragments/layout :: menu}"></aside>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 th:text="${usuarioDTO.username != null ? 'Editar Usuario' : 'Crear Usuario'}">Crear Usuario</h2>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/luxbar/guardar usuario}" th:object="${usuarioDTO}" method="post">
 
+                        <div class="row">
+                            <h4 class="mb-3 border-bottom pb-2">Información de Empleado</h4>
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="apellido" class="form-label">Apellido</label>
+                                <input type="text" id="apellido" th:field="*{apellido}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="documento" class="form-label">Documento</label>
+                                <input type="text" id="documento" th:field="*{documento}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="text" id="telefono" th:field="*{telefono}" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="idRol" class="form-label">Rol</label>
+                                <select id="idRol" th:field="*{idRol}" class="form-select" required>
+                                    <option value="">Seleccione un Rol</option>
+                                    <option th:each="rol : ${roles}" th:value="${rol.idRol}" th:text="${rol.nombre}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="idSede" class="form-label">Sede</label>
+                                <select id="idSede" th:field="*{idSede}" class="form-select" required>
+                                    <option value="">Seleccione una Sede</option>
+                                    <option th:each="sede : ${sedes}" th:value="${sede.idSede}" th:text="${sede.nombre}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <h4 class="mb-3 border-bottom pb-2">Información de Usuario</h4>
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Nombre de Usuario</label>
+                                <input type="text" id="username" th:field="*{username}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" id="password" th:field="*{password}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success">Guardar Usuario y Empleado</button>
+                            <a th:href="@{/luxbar/usuarios}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
