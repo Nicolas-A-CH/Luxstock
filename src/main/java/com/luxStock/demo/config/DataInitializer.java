@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
@@ -27,18 +30,25 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+
         // Verificar si el usuario administrador ya existe
         if (usuarioRepository.findByUsername("admin").isEmpty()) {
 
-            // 1. Obtener Rol 1 y Sede 1 (Deben existir en la DB)
-            Rol rolAdmin = rolRepository.findById(1).orElseGet(() -> {
-                Rol newRol = new Rol(1, "ADMIN");
-                return rolRepository.save(newRol);
-            });
+            List<String> rolesNecesarios = Arrays.asList("Administrador", "Cajero", "Mesero");
+
+            for (String nombreRol : rolesNecesarios) {
+                rolRepository.findByNombre(nombreRol).orElseGet(() -> {
+                    Rol newRol = new Rol();
+                    newRol.setNombre(nombreRol);
+                    return rolRepository.save(newRol);
+                });
+            }
+
+            Rol rolAdmin = rolRepository.findByNombre("Administrador")
+                    .orElseThrow(() -> new RuntimeException("Error: No se pudo encontrar el rol Administrador"));
 
             Sede sedePrincipal = sedeRepository.findById(1).orElseGet(() -> {
                 Sede newSede = new Sede();
-                newSede.setIdSede(1);
                 newSede.setNombre("Sede Principal");
                 newSede.setDireccion("Calle 123");
                 return sedeRepository.save(newSede);
@@ -46,7 +56,6 @@ public class DataInitializer implements CommandLineRunner {
 
             // 2. Crear Empleado Administrador
             Empleado adminEmpleado = new Empleado();
-            adminEmpleado.setIdEmpleado(1);
             adminEmpleado.setNombre("Administrador");
             adminEmpleado.setApellido("Sistema");
             adminEmpleado.setDocumento("12345678");
@@ -57,7 +66,6 @@ public class DataInitializer implements CommandLineRunner {
 
             // 3. Crear Usuario Administrador
             Usuario adminUsuario = new Usuario();
-            adminUsuario.setIdUsuario(1);
             adminUsuario.setUsername("admin");
             adminUsuario.setPassword(passwordEncoder.encode("pruebas"));
             adminUsuario.setEmpleado(adminEmpleado);
