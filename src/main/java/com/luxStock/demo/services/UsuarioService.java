@@ -1,7 +1,7 @@
 package com.luxStock.demo.services;
 
-import com.luxStock.demo.dto.UsuarioEmpleadoDTO;
-import com.luxStock.demo.entity.Rol;
+import com.luxStock.demo.model.dto.UsuarioEmpleadoDTO;
+import com.luxStock.demo.model.entity.Rol;
 import java.util.List;
 
 public interface UsuarioService {

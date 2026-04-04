@@ -1,6 +1,6 @@
 package com.luxStock.demo.services;
 
-import com.luxStock.demo.dto.SedeDTO;
+import com.luxStock.demo.model.dto.SedeDTO;
 
 import java.util.List;
 

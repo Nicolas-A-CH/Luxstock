@@ -1,10 +1,10 @@
 package com.luxStock.demo.services.impl;
 
-import com.luxStock.demo.dto.UsuarioEmpleadoDTO;
-import com.luxStock.demo.entity.Empleado;
-import com.luxStock.demo.entity.Rol;
-import com.luxStock.demo.entity.Sede;
-import com.luxStock.demo.entity.Usuario;
+import com.luxStock.demo.model.dto.UsuarioEmpleadoDTO;
+import com.luxStock.demo.model.entity.Empleado;
+import com.luxStock.demo.model.entity.Rol;
+import com.luxStock.demo.model.entity.Sede;
+import com.luxStock.demo.model.entity.Usuario;
 import com.luxStock.demo.repository.EmpleadoRepository;
 import com.luxStock.demo.repository.RolRepository;
 import com.luxStock.demo.repository.SedeRepository;

@@ -1,7 +1,7 @@
 package com.luxStock.demo.controller.api;
 
-import com.luxStock.demo.dto.SedeDTO;
-import com.luxStock.demo.dto.UsuarioEmpleadoDTO;
+import com.luxStock.demo.model.dto.SedeDTO;
+import com.luxStock.demo.model.dto.UsuarioEmpleadoDTO;
 import com.luxStock.demo.services.SedeService;
 import com.luxStock.demo.services.UsuarioService;
 import lombok.RequiredArgsConstructor;

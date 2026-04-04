@@ -1,6 +1,6 @@
 package com.luxStock.demo.security;
 
-import com.luxStock.demo.entity.Usuario;
+import com.luxStock.demo.model.entity.Usuario;
 import com.luxStock.demo.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

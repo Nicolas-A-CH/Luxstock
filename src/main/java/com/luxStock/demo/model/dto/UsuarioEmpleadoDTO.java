@@ -1,4 +1,4 @@
-package com.luxStock.demo.dto;
+package com.luxStock.demo.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

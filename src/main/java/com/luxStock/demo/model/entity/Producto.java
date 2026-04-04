@@ -1,4 +1,4 @@
-package com.luxStock.demo.entity;
+package com.luxStock.demo.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

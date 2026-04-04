@@ -1,23 +1,23 @@
-package com.luxStock.demo.entity;
+package com.luxStock.demo.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "pedidos")
-public class Pedido {
+@Table(name = "ventas")
+public class Venta {
     @Id
-    @Column(name = "id_pedido")
-    private Integer idPedido;
+    @Column(name = "id_venta")
+    private Integer idVenta;
 
-    // Se inicializa con la fecha actual si no se provee
     @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fecha = LocalDateTime.now();
 
@@ -29,6 +29,6 @@ public class Pedido {
     @JoinColumn(name = "id_sede")
     private Sede sede;
 
-    @Column(length = 50)
-    private String estado;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal total;
 }

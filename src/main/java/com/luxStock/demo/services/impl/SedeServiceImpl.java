@@ -1,7 +1,7 @@
 package com.luxStock.demo.services.impl;
 
-import com.luxStock.demo.dto.SedeDTO;
-import com.luxStock.demo.entity.Sede;
+import com.luxStock.demo.model.dto.SedeDTO;
+import com.luxStock.demo.model.entity.Sede;
 import com.luxStock.demo.repository.SedeRepository;
 import com.luxStock.demo.services.SedeService;
 import org.springframework.stereotype.Service;

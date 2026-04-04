@@ -1,6 +1,6 @@
 package com.luxStock.demo.repository;
 
-import com.luxStock.demo.entity.Rol;
+import com.luxStock.demo.model.entity.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
