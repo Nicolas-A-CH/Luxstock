@@ -29,14 +29,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Al estar dentro de @Transactional, Hibernate puede inicializar los proxies de Empleado y Rol
         String rolNombre = usuario.getEmpleado().getRol().getNombre();
         Integer idEmpleado = usuario.getEmpleado().getIdEmpleado();
-        String nombreSede = usuario.getEmpleado().getSede().getNombre();
+        Integer idSede = usuario.getEmpleado().getSede().getIdSede();
 
         return new UsuarioSecurityDTO(
                 usuario.getUsername(),
                 usuario.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rolNombre.toUpperCase())),
                 idEmpleado,
-                nombreSede,
+                idSede,
                 rolNombre
         );
     }

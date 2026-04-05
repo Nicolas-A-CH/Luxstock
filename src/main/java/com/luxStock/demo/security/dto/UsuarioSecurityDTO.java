@@ -16,7 +16,7 @@ public class UsuarioSecurityDTO implements UserDetails {
     private String password;
     private List<SimpleGrantedAuthority> authorities;
     private Integer idEmpleado;
-    private String nombreSede;
+    private Integer idSede;
     private String rol;
 
     @Override
