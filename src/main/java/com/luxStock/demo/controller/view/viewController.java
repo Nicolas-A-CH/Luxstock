@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -87,6 +88,13 @@ public class viewController {
     @GetMapping("/pedidos")
     public String viewPedidosPage(Model model){
         model.addAttribute("pedidos", pedidoService.ObtenerTodosLosPedidos());
+        Map<Integer, String> mapaEmpleados = usuarioService.obtenerTodosLosUsuariosDTO().stream()
+                .collect(Collectors.toMap(
+                        UsuarioEmpleadoDTO::getIdEmpleado,
+                        // Aquí concatenamos el nombre y apellido para que se vea completo en la tabla
+                        usuario -> usuario.getNombre() + " " + usuario.getApellido()
+                ));
+        model.addAttribute("mapaEmpleados", mapaEmpleados);
         return "listadoPedidos";
     }
     

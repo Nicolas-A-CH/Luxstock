@@ -47,9 +47,9 @@
                                 <tbody>
                                 <tr th:each="pedido : ${pedidos}">
                                     <td th:text="${pedido.idPedido}"></td>
-                                    <td th:text="${pedido.fecha}"></td>
+                                    <td th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}"></td>
                                     <td th:text="${pedido.estado}"></td>
-                                    <td th:text="${pedido.idEmpleado}"></td>
+                                    <td th:text="${mapaEmpleados[pedido.idEmpleado] != null ? mapaEmpleados[pedido.idEmpleado] : pedido.idEmpleado}"></td>
                                     <td class="text-center">
                                         <a th:href="@{/luxbar/editar pedido/{id}(id=${pedido.idPedido})}" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
