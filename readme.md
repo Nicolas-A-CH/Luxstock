@@ -13,6 +13,41 @@
 
 ---
 
+## Seguridad y Autenticación (JWT en Cookies)
+
+El sistema utiliza un esquema de seguridad basado en **Spring Security** y **JSON Web Tokens (JWT)**. A diferencia del almacenamiento tradicional en `localStorage`, el token se gestiona mediante **Cookies** para mejorar la seguridad contra ataques XSS.
+
+### Implementación del Token
+1.  **Generación**: Al iniciar sesión con éxito, `CustomAuthenticationSuccessHandler` genera un JWT.
+2.  **Almacenamiento**: El token se envía al cliente en una cookie llamada `jwt`.
+    *   `HttpOnly`: true (No accesible vía JavaScript).
+    *   `Secure`: false (Debe ser true en producción con HTTPS).
+    *   `Path`: /
+3.  **Validación**: En cada petición, `JwtAuthenticationFilter` extrae la cookie, valida el token y establece la autenticación en el contexto de seguridad de Spring.
+
+### Uso en Controladores (@AuthenticationPrincipal)
+
+Para obtener los datos del usuario actualmente autenticado en cualquier método de un controlador, se utiliza la anotación `@AuthenticationPrincipal`. Esto inyecta directamente nuestro DTO de seguridad (`UsuarioSecurityDTO`).
+
+**Ejemplo de uso:**
+
+```java
+@PostMapping("/pedidos/registrar")
+public ResponseEntity<String> registroPedidos(
+        @ModelAttribute PedidoDTO pedidoDTO, 
+        @AuthenticationPrincipal UsuarioSecurityDTO usuarioLogueado
+) {
+    // Acceso a datos del usuario
+    Integer idEmpleado = usuarioLogueado.getIdEmpleado();
+    String nombre = usuarioLogueado.getNombreCompleto();
+    
+    // ... lógica del negocio
+    return ResponseEntity.ok("Pedido registrado por: " + nombre);
+}
+```
+
+---
+
 ## Estructura de Base de Datos
 
 Este sección del documento explica la estructura y las decisiones de diseño tomadas para el mapeo de la base de datos del sistema de gestión de bar.
