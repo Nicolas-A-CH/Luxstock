@@ -1,11 +1,15 @@
 package com.luxStock.demo.controller.api;
 
+import com.luxStock.demo.model.dto.PedidoDTO;
 import com.luxStock.demo.model.dto.SedeDTO;
 import com.luxStock.demo.model.dto.UsuarioEmpleadoDTO;
+import com.luxStock.demo.security.dto.UsuarioSecurityDTO;
+import com.luxStock.demo.services.PedidoService;
 import com.luxStock.demo.services.SedeService;
 import com.luxStock.demo.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class restController {
     private final SedeService sedeService;
     private final UsuarioService usuarioService;
+    private final PedidoService pedidoService;
 
     @PostMapping("/guardarSede")
     public ResponseEntity<String> guardarSede(@ModelAttribute SedeDTO sedeDTO) {
@@ -38,6 +43,20 @@ public class restController {
             return ResponseEntity.ok("Usuario guardado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error al guardar el usuario: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("registrarPedido")
+    public ResponseEntity<String> registroPedidos(@ModelAttribute PedidoDTO pedidoDTO, @AuthenticationPrincipal UsuarioSecurityDTO usuarioLogueado){
+        try {
+            Integer idEmpleado = usuarioLogueado.getIdEmpleado();
+            Integer idSede = usuarioLogueado.getIdSede();
+            pedidoDTO.setIdEmpleado(idEmpleado);
+            pedidoDTO.setIdSede(idSede);
+            pedidoService.registroPedidos(pedidoDTO);
+            return ResponseEntity.ok("Pedido creado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error al guardar el pedido: " + e.getMessage());
         }
     }
 

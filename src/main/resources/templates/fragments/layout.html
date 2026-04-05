@@ -61,7 +61,7 @@
 
                     <!-- Pedidos: Administrador y Mesero -->
                     <li class="nav-item" sec:authorize="hasAnyRole('ADMINISTRADOR', 'MESERO')">
-                        <a th:href="@{/pedidos}" class="nav-link">
+                        <a th:href="@{/luxbar/pedidos}" class="nav-link">
                             <i class="nav-icon fas fa-clipboard-list"></i>
                             <p>Pedidos</p>
                         </a>
