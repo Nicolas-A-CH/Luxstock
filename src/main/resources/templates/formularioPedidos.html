@@ -33,6 +33,7 @@
                                             <select th:if="${isEdit}" class="form-select" th:field="*{estado}">
                                                 <option th:each="est : ${estados}" th:value="${est}" th:text="${est}"></option>
                                             </select>
+                                            <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
 
