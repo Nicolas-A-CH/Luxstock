@@ -1,7 +1,8 @@
-package com.luxStock.demo.security;
+package com.luxStock.demo.security.custom;
 
 import com.luxStock.demo.model.entity.Usuario;
 import com.luxStock.demo.repository.UsuarioRepository;
+import com.luxStock.demo.security.dto.UsuarioSecurityDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -27,11 +28,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // Al estar dentro de @Transactional, Hibernate puede inicializar los proxies de Empleado y Rol
         String rolNombre = usuario.getEmpleado().getRol().getNombre();
+        Integer idEmpleado = usuario.getEmpleado().getIdEmpleado();
+        String nombreSede = usuario.getEmpleado().getSede().getNombre();
 
-        return new User(
+        return new UsuarioSecurityDTO(
                 usuario.getUsername(),
                 usuario.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rolNombre.toUpperCase()))
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rolNombre.toUpperCase())),
+                idEmpleado,
+                nombreSede,
+                rolNombre
         );
     }
 }
