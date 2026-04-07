@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+
+    <div class="content-wrapper">
+
+        <!-- HEADER -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <h1>Nuevo Inventario</h1>
+            </div>
+        </section>
+
+        <!-- FORM -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="card card-primary">
+
+                    <div class="card-header">
+                        <h3 class="card-title">Registrar Inventario</h3>
+                    </div>
+
+                    <form th:action="@{/inventario}" th:object="${inventario}" method="post">
+
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label>Producto</label>
+                                <select class="form-control" th:field="*{producto}">
+                                    <option th:each="p : ${productos}"
+                                            th:value="${p.idProducto}"
+                                            th:text="${p.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Sede</label>
+                                <select class="form-control" th:field="*{sede}">
+                                    <option th:each="s : ${sedes}"
+                                            th:value="${s.idSede}"
+                                            th:text="${s.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cantidad</label>
+                                <input type="number" class="form-control" th:field="*{cantidad}">
+                            </div>
+
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <a href="/inventario" class="btn btn-secondary">Cancelar</a>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

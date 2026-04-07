@@ -7,6 +7,7 @@ import com.luxStock.demo.security.dto.UsuarioSecurityDTO;
 import com.luxStock.demo.services.PedidoService;
 import com.luxStock.demo.services.SedeService;
 import com.luxStock.demo.services.UsuarioService;
+import com.luxStock.demo.services.InventarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,7 @@ public class restController {
     private final SedeService sedeService;
     private final UsuarioService usuarioService;
     private final PedidoService pedidoService;
+    private final InventarioService inventarioService;
 
     @PostMapping("/guardarSede")
     public ResponseEntity<String> guardarSede(@ModelAttribute SedeDTO sedeDTO) {
@@ -64,4 +66,18 @@ public class restController {
     public ResponseEntity<Boolean> validarDocumento(@RequestParam String documento) {
         return ResponseEntity.ok(usuarioService.existePorDocumento(documento));
     }
+    @PostMapping("/actualizarCantidadInventario")
+    public ResponseEntity<String> actualizarCantidadInventario(
+            @RequestParam Integer idInventario,
+            @RequestParam Integer cantidad) {
+
+        try {
+            inventarioService.actualizarCantidad(idInventario, cantidad);
+            return ResponseEntity.ok("Cantidad actualizada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error al actualizar la cantidad: " + e.getMessage());
+        }
+    }
+
 }

@@ -3,51 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Index</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <title>LuxStock Inventory</title>
+
+    <!-- Fuentes y estilos -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=fallback">
     <link rel="stylesheet" th:href="@{/webjars/AdminLTE/3.2.0/dist/css/adminlte.min.css}">
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.4.0/css/all.min.css}">
 
     <style>
-        /* Hacemos que el menú de navegación flote sobre la imagen principal */
+        /* NAVBAR con glassmorphism */
         .main-header {
-            position: absolute;
+            position: fixed;
             top: 0;
             width: 100%;
             z-index: 1030;
-            background-color: transparent !important; /* Fondo transparente */
-            border-bottom: none !important;
+            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.25) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: background 0.3s ease;
         }
 
-        /* Ajustamos el color de los enlaces del menú para que contrasten */
+        /* Navbar al hacer scroll */
+        .navbar-scrolled {
+            background: rgba(0,0,0,0.85) !important;
+        }
+
         .navbar-light .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.8) !important;
+            color: rgba(255,255,255,0.85) !important;
             font-weight: 500;
+            transition: 0.3s;
         }
 
         .navbar-light .navbar-nav .nav-link:hover {
-            color: #ffffff !important;
+            color: #fff !important;
+            transform: translateY(-2px);
         }
 
-        /* Estilo para el botón de login en el menú */
         .btn-login-nav {
             border-radius: 20px;
             padding: 6px 20px;
             font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            background: #007bff;
+            border: none;
+            transition: 0.3s;
         }
 
-        /* Sección principal (Hero) */
+        .btn-login-nav:hover {
+            background: #0056d2;
+            transform: translateY(-2px);
+        }
+
+        /* HERO */
         .hero-section {
             height: 100vh;
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
-            url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            animation: fadeDown 1s ease;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            animation: fadeUp 1.2s ease;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-hero {
+            border-radius: 30px;
+            padding: 12px 40px;
+            font-size: 1.2rem;
+            border: 2px solid #fff;
+            transition: 0.3s;
+        }
+
+        .btn-hero:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-3px);
+        }
+
+        /* Sección de características */
+        .features-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .feature-box {
+            padding: 30px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        /* Footer */
+        footer {
+            background: #111;
+            color: #bbb;
+            padding: 40px 0;
             text-align: center;
         }
     </style>
@@ -56,28 +137,23 @@
 <body class="hold-transition layout-top-nav">
 <div class="wrapper">
 
+    <!-- NAVBAR -->
     <nav class="main-header navbar navbar-expand-md navbar-light">
         <div class="container">
             <a href="/" class="navbar-brand">
                 <img th:src="@{/images/logo.webp}" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .9">
-                <span class="brand-text font-weight-light text-white"><b>Bar</b>Inventory</span>
+                <span class="brand-text font-weight-light text-white"><b>Lux</b>Stock</span>
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-expanded="false" style="color: white;">
+            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse">
                 <i class="fas fa-bars text-white"></i>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#servicios" class="nav-link">Servicios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#contacto" class="nav-link">Contacto</a>
-                    </li>
+                    <li class="nav-item"><a href="/" class="nav-link">Inicio</a></li>
+                    <li class="nav-item"><a href="#servicios" class="nav-link">Servicios</a></li>
+                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
                 </ul>
 
                 <ul class="navbar-nav ml-auto">
@@ -91,22 +167,69 @@
         </div>
     </nav>
 
+    <!-- HERO -->
     <div class="hero-section">
         <div class="container mt-5">
-            <h1 class="display-3 font-weight-bold"><b>Bar</b>Inventory</h1>
-            <p class="lead mb-4">Gestión inteligente de stock y licores en tiempo real.</p>
-            <hr class="my-4" style="border-top: 1px solid rgba(255,255,255,0.3); width: 50%; margin: 0 auto;">
+            <h1 class="hero-title"><b>LuxStock</b> Inventory</h1>
+            <p class="hero-subtitle mb-4">Control inteligente de inventario para bares y licores.</p>
 
-            <br>
-            <a th:href="@{/login}" class="btn btn-outline-light btn-lg rounded-pill px-5 mt-3">
+            <a th:href="@{/login}" class="btn btn-outline-light btn-hero mt-3">
                 Ingresar al Sistema
             </a>
         </div>
     </div>
 
+    <!-- SECCIÓN DE CARACTERÍSTICAS -->
+    <section class="features-section" id="servicios">
+        <div class="container text-center">
+            <h2 class="mb-5">¿Qué ofrece LuxStock?</h2>
+
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-box">
+                        <i class="fas fa-box fa-3x mb-3 text-primary"></i>
+                        <h4>Inventario en tiempo real</h4>
+                        <p>Control preciso de botellas, unidades y movimientos por sede.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="feature-box">
+                        <i class="fas fa-chart-line fa-3x mb-3 text-success"></i>
+                        <h4>Reportes automáticos</h4>
+                        <p>Visualiza consumos, pérdidas y tendencias de ventas.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="feature-box">
+                        <i class="fas fa-lock fa-3x mb-3 text-dark"></i>
+                        <h4>Seguridad y roles</h4>
+                        <p>Accesos por usuario, auditoría y control de movimientos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contacto">
+        <p>© 2026 LuxStock — Sistema de Inventario para Bares</p>
+        <p>Desarrollado por Jonathan Caldas</p>
+    </footer>
+
 </div>
 
+<!-- Scripts -->
 <script th:src="@{/webjars/jquery}"></script>
+
+<script>
+    // Navbar con efecto scroll
+    window.addEventListener("scroll", function () {
+        const nav = document.querySelector(".main-header");
+        nav.classList.toggle("navbar-scrolled", window.scrollY > 50);
+    });
+</script>
 
 </body>
 </html>
