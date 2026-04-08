@@ -14,21 +14,24 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "ventas")
 public class Venta {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_venta")
     private Integer idVenta;
 
-    @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime fecha = LocalDateTime.now();
+    private LocalDateTime fecha;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_empleado")
     private Empleado empleado;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_sede")
-    private Sede sede;
+    @Column(name = "id_pedido")
+    private Integer idPedido;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal total;
+
+    @Column(name = "medio_pago")
+    private String medioPago;
 }
