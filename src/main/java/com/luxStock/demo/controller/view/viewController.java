@@ -1,21 +1,18 @@
 package com.luxStock.demo.controller.view;
 
-import com.luxStock.demo.model.dto.PedidoDTO;
-import com.luxStock.demo.model.dto.SedeDTO;
-import com.luxStock.demo.model.dto.UsuarioEmpleadoDTO;
+import com.luxStock.demo.model.dto.*;
 import com.luxStock.demo.model.entity.Sede;
 import com.luxStock.demo.model.enums.EstadoPedido;
-import com.luxStock.demo.services.PedidoService;
-import com.luxStock.demo.services.ProductoService;
-import com.luxStock.demo.services.SedeService;
-import com.luxStock.demo.services.UsuarioService;
+import com.luxStock.demo.model.enums.FormasPago;
+import com.luxStock.demo.services.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +26,7 @@ public class viewController {
     private final UsuarioService usuarioService;
     private final PedidoService pedidoService;
     private final ProductoService productoService;
+    private final VentaService ventaService;
 
     @GetMapping("/dashboard")
     public String viewDashboardPage(){
@@ -91,7 +89,6 @@ public class viewController {
         Map<Integer, String> mapaEmpleados = usuarioService.obtenerTodosLosUsuariosDTO().stream()
                 .collect(Collectors.toMap(
                         UsuarioEmpleadoDTO::getIdEmpleado,
-                        // Aquí concatenamos el nombre y apellido para que se vea completo en la tabla
                         usuario -> usuario.getNombre() + " " + usuario.getApellido()
                 ));
         model.addAttribute("mapaEmpleados", mapaEmpleados);
@@ -129,5 +126,80 @@ public class viewController {
             return "redirect:/luxbar/pedidos";
         }
         return "formularioPedidos";
+    }
+
+    @GetMapping("/ventas")
+    public String viewVentasPage(Model model){
+        model.addAttribute("pedidos", pedidoService.ObtenerTodosLosPedidos());
+        Map<Integer, String> mapaEmpleados = usuarioService.obtenerTodosLosUsuariosDTO().stream()
+                .collect(Collectors.toMap(
+                        UsuarioEmpleadoDTO::getIdEmpleado,
+                        usuario -> usuario.getNombre() + " " + usuario.getApellido()
+                ));
+        model.addAttribute("mapaEmpleados", mapaEmpleados);
+        
+        Map<Integer, String> mapaSedes = sedeService.obtenerTodasLasSedesDTO().stream()
+                .collect(Collectors.toMap(
+                        SedeDTO::getIdSede,
+                        SedeDTO::getNombre
+                ));
+        model.addAttribute("mapaSedes", mapaSedes);
+        
+        return "listadoVentas";
+    }
+
+    @GetMapping("/crear venta/{idPedido}")
+    public String viewFormularioVentaPage(@PathVariable Integer idPedido, Model model){
+        PedidoDTO pedidoDTO = pedidoService.ObtenerTodosLosPedidos().stream()
+                .filter(p -> p.getIdPedido().equals(idPedido))
+                .findFirst()
+                .orElse(null);
+        
+        if(pedidoDTO != null) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            UsuarioEmpleadoDTO usuarioLogueado = usuarioService.obtenerTodosLosUsuariosDTO().stream()
+                    .filter(u -> u.getUsername().equals(username))
+                    .findFirst()
+                    .orElse(null);
+
+            VentaDTO ventaDTO = new VentaDTO();
+            ventaDTO.setIdPedido(pedidoDTO.getIdPedido());
+            if (usuarioLogueado != null) {
+                ventaDTO.setIdEmpleado(usuarioLogueado.getIdEmpleado());
+                model.addAttribute("sedeUsuario", usuarioLogueado.getNombreSede());
+                model.addAttribute("idSedeUsuario", usuarioLogueado.getIdSede());
+            }
+
+            // Calcular total
+            List<ProductoDTO> productos = productoService.ObtenerTodosProductors();
+            Map<Integer, BigDecimal> precios = productos.stream()
+                    .collect(Collectors.toMap(ProductoDTO::getIdProducto, ProductoDTO::getPrecio));
+            
+            BigDecimal total = pedidoDTO.getDetalles().stream()
+                    .map(d -> {
+                        BigDecimal precio = precios.get(d.getIdProducto());
+                        return precio != null ? precio.multiply(new BigDecimal(d.getCantidad())) : BigDecimal.ZERO;
+                    })
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            ventaDTO.setTotal(total);
+            
+            model.addAttribute("ventaDTO", ventaDTO);
+            model.addAttribute("pedido", pedidoDTO);
+            model.addAttribute("mapaProductos", productos.stream()
+                    .collect(Collectors.toMap(ProductoDTO::getIdProducto, ProductoDTO::getNombre)));
+            model.addAttribute("mapaPrecios", precios);
+            model.addAttribute("formasPago", FormasPago.values());
+            
+            return "formularioVenta";
+        }
+        return "redirect:/luxbar/ventas";
+    }
+
+    @PostMapping("/guardar venta")
+    public String guardarVenta(@ModelAttribute VentaDTO ventaDTO) {
+        ventaService.registrarVenta(ventaDTO);
+        return "redirect:/luxbar/ventas";
     }
 }

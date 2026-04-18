@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+    <!-- Content Header (Page header) -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Gestión de ventas</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item active">Usuarios</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Ventas registradas</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>ID Pedido</th>
+                                        <th>Empleado</th>
+                                        <th>Sede</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="pedido : ${pedidos}">
+                                        <td th:text="${pedido.idPedido}">101</td>
+
+                                        <td th:text="${mapaEmpleados[pedido.idEmpleado]}">Juan Perez</td>
+
+                                        <td th:text="${mapaSedes[pedido.idSede]}">Sede Central</td>
+
+                                        <td>
+                                            <a th:href="@{'/luxbar/crear venta/' + ${pedido.idPedido}}"
+                                               class="btn btn-primary btn-sm">
+                                                Registrar Venta
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+    </div>
+</div>
+</body>
+</html>
