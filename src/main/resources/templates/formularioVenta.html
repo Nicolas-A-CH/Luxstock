@@ -1,109 +1,113 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/layout}">
-<head>
-    <title>Registrar Venta</title>
-</head>
-<body>
-<div layout:fragment="content">
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Registrar Venta</h1>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Registrar Venta</h1>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h3 class="card-title">Detalles de la Venta para el Pedido #<span th:text="${pedido.idPedido}"></span></h3>
-                        </div>
-                        <form th:action="@{/luxbar/guardar venta}" th:object="${ventaDTO}" method="post">
-                            <input type="hidden" th:field="*{idPedido}" />
-                            <input type="hidden" th:field="*{idEmpleado}" />
-                            <input type="hidden" th:field="*{total}" />
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Detalles de la Venta para el Pedido #<span
+                                        th:text="${pedido.idPedido}"></span></h3>
+                            </div>
+                            <form th:action="@{/luxbar/guardar venta}" th:object="${ventaDTO}" method="post">
+                                <input type="hidden" th:field="*{idPedido}"/>
+                                <input type="hidden" th:field="*{idEmpleado}"/>
+                                <input type="hidden" th:field="*{total}"/>
 
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Sede</label>
-                                            <select class="form-control" disabled>
-                                                <option th:value="${idSedeUsuario}" th:text="${sedeUsuario}" selected></option>
-                                            </select>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Sede</label>
+                                                <select class="form-control" disabled>
+                                                    <option th:value="${idSedeUsuario}" th:text="${sedeUsuario}"
+                                                            selected></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Forma de Pago</label>
+                                                <select class="form-control" th:field="*{medioPago}" required>
+                                                    <option value="">Seleccione una forma de pago</option>
+                                                    <option th:each="forma : ${formasPago}"
+                                                            th:value="${forma.nombreForma}"
+                                                            th:text="${forma.nombreForma}"></option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Forma de Pago</label>
-                                            <select class="form-control" th:field="*{medioPago}" required>
-                                                <option value="">Seleccione una forma de pago</option>
-                                                <option th:each="forma : ${formasPago}"
-                                                        th:value="${forma.nombreForma}"
-                                                        th:text="${forma.nombreForma}"></option>
-                                            </select>
+
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <h5>Detalles del Pedido</h5>
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Precio Unitario</th>
+                                                    <th>Subtotal</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="detalle : ${pedido.detalles}">
+                                                    <td th:text="${mapaProductos.get(detalle.idProducto)}"></td>
+                                                    <td th:text="${detalle.cantidad}"></td>
+                                                    <td th:text="${'$' + mapaPrecios.get(detalle.idProducto)}"></td>
+                                                    <td th:text="${'$' + (mapaPrecios.get(detalle.idProducto) * detalle.cantidad)}"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row mt-4">
-                                    <div class="col-12">
-                                        <h5>Detalles del Pedido</h5>
-                                        <table class="table table-bordered table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th>Producto</th>
-                                                <th>Cantidad</th>
-                                                <th>Precio Unitario</th>
-                                                <th>Subtotal</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr th:each="detalle : ${pedido.detalles}">
-                                                <td th:text="${mapaProductos.get(detalle.idProducto)}"></td>
-                                                <td th:text="${detalle.cantidad}"></td>
-                                                <td th:text="${'$' + mapaPrecios.get(detalle.idProducto)}"></td>
-                                                <td th:text="${'$' + (mapaPrecios.get(detalle.idProducto) * detalle.cantidad)}"></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="row justify-content-end">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Total de la Venta</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">$</span>
+                                    <div class="row justify-content-end">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Total de la Venta</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">$</span>
+                                                    </div>
+                                                    <input type="text" class="form-control" th:value="${ventaDTO.total}"
+                                                           disabled/>
                                                 </div>
-                                                <input type="text" class="form-control" th:value="${ventaDTO.total}" disabled />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="card-footer text-right">
-                                <a th:href="@{/luxbar/ventas}" class="btn btn-secondary">Cancelar</a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-save"></i> Confirmar Pago
-                                </button>
-                            </div>
-                        </form>
+                                <div class="card-footer text-right">
+                                    <a th:href="@{/luxbar/ventas}" class="btn btn-secondary">Cancelar</a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save"></i> Confirmar Pago
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
 </body>
 </html>

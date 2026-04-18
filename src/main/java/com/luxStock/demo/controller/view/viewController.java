@@ -130,7 +130,16 @@ public class viewController {
 
     @GetMapping("/ventas")
     public String viewVentasPage(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UsuarioEmpleadoDTO usuarioLogueado = usuarioService.obtenerTodosLosUsuariosDTO().stream()
+                .filter(u -> u.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+
+        model.addAttribute("usuarioLogueado", usuarioLogueado);
         model.addAttribute("pedidos", pedidoService.ObtenerTodosLosPedidos());
+        
         Map<Integer, String> mapaEmpleados = usuarioService.obtenerTodosLosUsuariosDTO().stream()
                 .collect(Collectors.toMap(
                         UsuarioEmpleadoDTO::getIdEmpleado,
@@ -138,12 +147,14 @@ public class viewController {
                 ));
         model.addAttribute("mapaEmpleados", mapaEmpleados);
         
-        Map<Integer, String> mapaSedes = sedeService.obtenerTodasLasSedesDTO().stream()
+        List<SedeDTO> sedes = sedeService.obtenerTodasLasSedesDTO();
+        Map<Integer, String> mapaSedes = sedes.stream()
                 .collect(Collectors.toMap(
                         SedeDTO::getIdSede,
                         SedeDTO::getNombre
                 ));
         model.addAttribute("mapaSedes", mapaSedes);
+        model.addAttribute("listaSedes", sedes);
         
         return "listadoVentas";
     }

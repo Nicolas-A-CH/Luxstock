@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/layout :: head}"></head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -16,7 +16,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-                            <li class="breadcrumb-item active">Usuarios</li>
+                            <li class="breadcrumb-item active">Ventas</li>
                         </ol>
                     </div>
                 </div>
@@ -26,6 +26,57 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
+                <!-- Filtros -->
+                <div class="card card-default">
+                    <div class="card-header">
+                        <h3 class="card-title">Filtros de búsqueda</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Fecha Inicio:</label>
+                                    <input type="date" id="fechaInicio" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Fecha Fin:</label>
+                                    <input type="date" id="fechaFin" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3" th:if="${usuarioLogueado.nombreRol == 'ADMINISTRADOR'}">
+                                <div class="form-group">
+                                    <label>Sede:</label>
+                                    <select id="filtroSede" class="form-control">
+                                        <option value="">Todas las sedes</option>
+                                        <option th:each="sede : ${listaSedes}" th:value="${sede.idSede}" th:text="${sede.nombre}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Campo oculto para la sede del usuario si no es administrador -->
+                            <input type="hidden" id="usuarioSedeId" th:if="${usuarioLogueado.nombreRol != 'ADMINISTRADOR'}" th:value="${usuarioLogueado.idSede}">
+                            <input type="hidden" id="usuarioRol" th:value="${usuarioLogueado.nombreRol}">
+
+                            <div class="col-md-3 d-flex align-items-end">
+                                <div class="form-group">
+                                    <button id="btnFiltrar" class="btn btn-primary">
+                                        <i class="fas fa-filter"></i> Filtrar
+                                    </button>
+                                    <button id="btnLimpiar" class="btn btn-secondary">
+                                        <i class="fas fa-undo"></i> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -34,26 +85,34 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="example1" class="table table-bordered table-striped">
+                                <table id="tablaVentas" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
                                         <th>ID Pedido</th>
+                                        <th>Fecha</th>
                                         <th>Empleado</th>
                                         <th>Sede</th>
+                                        <th>Estado</th>
+                                        <th style="display:none;">SedeId</th>
                                         <th>Acciones</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="pedido : ${pedidos}">
                                         <td th:text="${pedido.idPedido}">101</td>
-
+                                        <td th:text="${#temporals.format(pedido.fecha, 'yyyy-MM-dd HH:mm')}">2023-01-01</td>
                                         <td th:text="${mapaEmpleados[pedido.idEmpleado]}">Juan Perez</td>
-
                                         <td th:text="${mapaSedes[pedido.idSede]}">Sede Central</td>
-
+                                        <td>
+                                            <span th:text="${pedido.estado}"
+                                                  th:class="${pedido.estado == 'SOLICITADO' ? 'badge badge-warning' : 'badge badge-success'}">
+                                            </span>
+                                        </td>
+                                        <td th:text="${pedido.idSede}" style="display:none;"></td>
                                         <td>
                                             <a th:href="@{'/luxbar/crear venta/' + ${pedido.idPedido}}"
-                                               class="btn btn-primary btn-sm">
+                                               th:class="${pedido.estado != 'SOLICITADO' ? 'btn btn-primary btn-sm disabled' : 'btn btn-primary btn-sm'}"
+                                               th:aria-disabled="${pedido.estado != 'SOLICITADO'}">
                                                 Registrar Venta
                                             </a>
                                         </td>
@@ -73,5 +132,8 @@
         </section>
     </div>
 </div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+<!-- Script personalizado para filtros -->
+<script th:src="@{/js/listadoVentas.js}"></script>
 </body>
 </html>
