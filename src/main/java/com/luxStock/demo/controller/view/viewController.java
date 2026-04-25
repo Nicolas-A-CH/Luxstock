@@ -94,16 +94,21 @@ public class viewController {
         model.addAttribute("mapaEmpleados", mapaEmpleados);
         return "listadoPedidos";
     }
-    
+
     @GetMapping("/crear pedidos")
     public String viewFormularioPedidosPage(Model model){
         PedidoDTO pedidoDTO = new PedidoDTO();
         pedidoDTO.setEstado(EstadoPedido.SOLICITADO.getNombreEstado());
+
         model.addAttribute("pedidoDTO", pedidoDTO);
         model.addAttribute("productos", productoService.ObtenerTodosProductors());
+        // --- AGREGA ESTA LÍNEA ---
+        model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
+        // -------------------------
         model.addAttribute("isEdit", false);
         return "formularioPedidos";
     }
+
 
     @GetMapping("/editar pedido/{id}")
     public String viewFormularioEdicionPedidoPage(@PathVariable Integer id, Model model){
@@ -112,7 +117,7 @@ public class viewController {
                 .filter(p -> p.getIdPedido().equals(id))
                 .findFirst()
                 .orElse(null);
-        
+
         if(pedidoDTO != null) {
             model.addAttribute("pedidoDTO", pedidoDTO);
             model.addAttribute("productos", productoService.ObtenerTodosProductors());
@@ -139,14 +144,14 @@ public class viewController {
 
         model.addAttribute("usuarioLogueado", usuarioLogueado);
         model.addAttribute("pedidos", pedidoService.ObtenerTodosLosPedidos());
-        
+
         Map<Integer, String> mapaEmpleados = usuarioService.obtenerTodosLosUsuariosDTO().stream()
                 .collect(Collectors.toMap(
                         UsuarioEmpleadoDTO::getIdEmpleado,
                         usuario -> usuario.getNombre() + " " + usuario.getApellido()
                 ));
         model.addAttribute("mapaEmpleados", mapaEmpleados);
-        
+
         List<SedeDTO> sedes = sedeService.obtenerTodasLasSedesDTO();
         Map<Integer, String> mapaSedes = sedes.stream()
                 .collect(Collectors.toMap(
@@ -155,7 +160,7 @@ public class viewController {
                 ));
         model.addAttribute("mapaSedes", mapaSedes);
         model.addAttribute("listaSedes", sedes);
-        
+
         return "listadoVentas";
     }
 
@@ -165,7 +170,7 @@ public class viewController {
                 .filter(p -> p.getIdPedido().equals(idPedido))
                 .findFirst()
                 .orElse(null);
-        
+
         if(pedidoDTO != null) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth.getName();
@@ -186,23 +191,23 @@ public class viewController {
             List<ProductoDTO> productos = productoService.ObtenerTodosProductors();
             Map<Integer, BigDecimal> precios = productos.stream()
                     .collect(Collectors.toMap(ProductoDTO::getIdProducto, ProductoDTO::getPrecio));
-            
+
             BigDecimal total = pedidoDTO.getDetalles().stream()
                     .map(d -> {
                         BigDecimal precio = precios.get(d.getIdProducto());
                         return precio != null ? precio.multiply(new BigDecimal(d.getCantidad())) : BigDecimal.ZERO;
                     })
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            
+
             ventaDTO.setTotal(total);
-            
+
             model.addAttribute("ventaDTO", ventaDTO);
             model.addAttribute("pedido", pedidoDTO);
             model.addAttribute("mapaProductos", productos.stream()
                     .collect(Collectors.toMap(ProductoDTO::getIdProducto, ProductoDTO::getNombre)));
             model.addAttribute("mapaPrecios", precios);
             model.addAttribute("formasPago", FormasPago.values());
-            
+
             return "formularioVenta";
         }
         return "redirect:/luxbar/ventas";
@@ -213,4 +218,11 @@ public class viewController {
         ventaService.registrarVenta(ventaDTO);
         return "redirect:/luxbar/ventas";
     }
+    @GetMapping("/api/productos/stock")
+    @ResponseBody
+    public Integer obtenerStock(@RequestParam Integer idProducto, @RequestParam Integer idSede) {
+        // Aquí llamas a tu servicio que consulta el stock por sede y producto
+        return productoService.obtenerStockDisponible(idProducto, idSede);
+    }
+
 }
