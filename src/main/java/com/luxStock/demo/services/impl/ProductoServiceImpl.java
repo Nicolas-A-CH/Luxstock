@@ -30,18 +30,33 @@ public class ProductoServiceImpl implements ProductoService {
         )).collect(Collectors.toList());
     }
 
-    /**
-     * Consulta el stock real en la tabla 'inventario'
-     * filtrando por el ID del producto y el ID de la sede.
-     */
     @Override
     public Integer obtenerStockDisponible(Integer idProducto, Integer idSede) {
         if (idProducto == null || idSede == null) {
             return 0;
         }
-
-        // Usamos el repositorio para buscar la cantidad real en la DB
         return inventarioRepository.obtenerStockPorProductoYSede(idProducto, idSede)
-                .orElse(0); // Si no existe el registro en esa sede, el stock es 0
+                .orElse(0);
+    }
+
+    @Override
+    public void guardarProducto(ProductoDTO productoDTO) {
+        Producto producto;
+        if (productoDTO.getIdProducto() != null && productoRepository.existsById(productoDTO.getIdProducto())) {
+            producto = productoRepository.findByIdProducto(productoDTO.getIdProducto());
+        } else {
+            producto = new Producto();
+        }
+        producto.setNombre(productoDTO.getNombre());
+        producto.setTipo(productoDTO.getTipo());
+        producto.setPrecio(productoDTO.getPrecio());
+        productoRepository.save(producto);
+    }
+
+    @Override
+    public ProductoDTO obtenerProductoPorId(Integer id) {
+        Producto producto = productoRepository.findByIdProducto(id);
+        if (producto == null) return null;
+        return new ProductoDTO(producto.getIdProducto(), producto.getNombre(), producto.getTipo(), producto.getPrecio());
     }
 }

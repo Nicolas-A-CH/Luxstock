@@ -27,10 +27,10 @@
                                 <div class="card-body">
                                     <input type="hidden" th:field="*{idPedido}" />
 
-                                    <!-- FILA DE ESTADO Y SEDE -->
+                                    <!-- FILA DE ESTADO, MESA Y SEDE -->
                                     <div class="row">
                                         <!-- Campo Estado -->
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <label class="form-label font-weight-bold">Estado</label>
                                             <input th:if="${!isEdit}" type="text" class="form-control" th:field="*{estado}" readonly>
                                             <select th:if="${isEdit}" class="form-select" th:field="*{estado}">
@@ -38,16 +38,29 @@
                                             </select>
                                         </div>
 
-                                        <!-- Selector de Sede (EL QUE NECESITABAS) -->
-                                        <div class="col-md-6">
+                                        <!-- Campo Mesa -->
+                                        <div class="col-md-4">
+                                            <label for="mesa" class="form-label font-weight-bold">Mesa</label>
+                                            <input type="number" id="mesa" class="form-control" th:field="*{mesa}" min="1" placeholder="N° de mesa" required>
+                                            <div class="invalid-feedback">Por favor, ingrese el número de mesa.</div>
+                                        </div>
+
+                                        <!-- Campo Sede -->
+                                        <div class="col-md-4">
                                             <label class="form-label font-weight-bold">Sede</label>
-                                            <select class="form-select" th:field="*{idSede}" id="idSede" required>
+                                            <!-- No administrador: sede bloqueada del token -->
+                                            <th:block th:if="${!esAdmin}">
+                                                <input type="hidden" th:field="*{idSede}" />
+                                                <input type="text" class="form-control" th:value="${sedeNombreParaMostrar}" disabled />
+                                            </th:block>
+                                            <!-- Administrador: selector de todas las sedes -->
+                                            <select th:if="${esAdmin}" class="form-select" th:field="*{idSede}" id="idSede" required>
                                                 <option value="">Seleccione una sede...</option>
                                                 <option th:each="s : ${sedes}"
                                                         th:value="${s.idSede}"
                                                         th:text="${s.nombre}"></option>
                                             </select>
-                                            <div class="invalid-feedback">Por favor, seleccione una sede.</div>
+                                            <div th:if="${esAdmin}" class="invalid-feedback">Por favor, seleccione una sede.</div>
                                         </div>
                                     </div>
 

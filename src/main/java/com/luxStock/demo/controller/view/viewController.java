@@ -4,9 +4,11 @@ import com.luxStock.demo.model.dto.*;
 import com.luxStock.demo.model.entity.Sede;
 import com.luxStock.demo.model.enums.EstadoPedido;
 import com.luxStock.demo.model.enums.FormasPago;
+import com.luxStock.demo.security.dto.UsuarioSecurityDTO;
 import com.luxStock.demo.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -96,22 +98,35 @@ public class viewController {
     }
 
     @GetMapping("/crear pedidos")
-    public String viewFormularioPedidosPage(Model model){
+    public String viewFormularioPedidosPage(Model model, @AuthenticationPrincipal UsuarioSecurityDTO currentUser) {
         PedidoDTO pedidoDTO = new PedidoDTO();
         pedidoDTO.setEstado(EstadoPedido.SOLICITADO.getNombreEstado());
 
+        List<SedeDTO> sedes = sedeService.obtenerTodasLasSedesDTO();
+        boolean esAdmin = "ADMINISTRADOR".equalsIgnoreCase(currentUser.getRol());
+
+        if (!esAdmin) {
+            pedidoDTO.setIdSede(currentUser.getIdSede());
+        }
+
+        String sedeNombreParaMostrar = sedes.stream()
+                .filter(s -> s.getIdSede().equals(currentUser.getIdSede()))
+                .map(SedeDTO::getNombre)
+                .findFirst()
+                .orElse("");
+
         model.addAttribute("pedidoDTO", pedidoDTO);
         model.addAttribute("productos", productoService.ObtenerTodosProductors());
-        // --- AGREGA ESTA LÍNEA ---
-        model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
-        // -------------------------
+        model.addAttribute("sedes", sedes);
         model.addAttribute("isEdit", false);
+        model.addAttribute("esAdmin", esAdmin);
+        model.addAttribute("sedeNombreParaMostrar", sedeNombreParaMostrar);
         return "formularioPedidos";
     }
 
 
     @GetMapping("/editar pedido/{id}")
-    public String viewFormularioEdicionPedidoPage(@PathVariable Integer id, Model model){
+    public String viewFormularioEdicionPedidoPage(@PathVariable Integer id, Model model, @AuthenticationPrincipal UsuarioSecurityDTO currentUser) {
         List<PedidoDTO> pedidos = pedidoService.ObtenerTodosLosPedidos();
         PedidoDTO pedidoDTO = pedidos.stream()
                 .filter(p -> p.getIdPedido().equals(id))
@@ -119,18 +134,49 @@ public class viewController {
                 .orElse(null);
 
         if(pedidoDTO != null) {
+            List<SedeDTO> sedes = sedeService.obtenerTodasLasSedesDTO();
+            boolean esAdmin = "ADMINISTRADOR".equalsIgnoreCase(currentUser.getRol());
+
+            String sedeNombreParaMostrar = sedes.stream()
+                    .filter(s -> s.getIdSede().equals(pedidoDTO.getIdSede()))
+                    .map(SedeDTO::getNombre)
+                    .findFirst()
+                    .orElse("");
+
             model.addAttribute("pedidoDTO", pedidoDTO);
             model.addAttribute("productos", productoService.ObtenerTodosProductors());
-            model.addAttribute("sedes", sedeService.obtenerTodasLasSedesDTO());
+            model.addAttribute("sedes", sedes);
             model.addAttribute("empleados", usuarioService.obtenerTodosLosUsuariosDTO());
             model.addAttribute("estados", Arrays.stream(EstadoPedido.values())
                     .map(EstadoPedido::getNombreEstado)
                     .collect(Collectors.toList()));
             model.addAttribute("isEdit", true);
+            model.addAttribute("esAdmin", esAdmin);
+            model.addAttribute("sedeNombreParaMostrar", sedeNombreParaMostrar);
         } else {
             return "redirect:/luxbar/pedidos";
         }
         return "formularioPedidos";
+    }
+
+    @GetMapping("/productos")
+    public String viewProductosPage(Model model) {
+        model.addAttribute("productos", productoService.ObtenerTodosProductors());
+        return "listadoProductos";
+    }
+
+    @GetMapping("/crear producto")
+    public String viewFormularioProductoPage(Model model) {
+        model.addAttribute("productoDTO", new ProductoDTO());
+        return "formularioProducto";
+    }
+
+    @GetMapping("/editar producto/{id}")
+    public String viewFormularioEdicionProductoPage(@PathVariable Integer id, Model model) {
+        ProductoDTO productoDTO = productoService.obtenerProductoPorId(id);
+        if (productoDTO == null) return "redirect:/luxbar/productos";
+        model.addAttribute("productoDTO", productoDTO);
+        return "formularioProducto";
     }
 
     @GetMapping("/ventas")

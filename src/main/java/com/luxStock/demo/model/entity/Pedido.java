@@ -22,6 +22,9 @@ public class Pedido {
     @Column(columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fecha = LocalDateTime.now();
 
+    @Column(name = "mesa", nullable = false)
+    private Integer mesa;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_empleado")
     private Empleado empleado;

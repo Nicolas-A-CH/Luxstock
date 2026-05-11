@@ -1,13 +1,15 @@
 package com.luxStock.demo.controller.api;
 
 import com.luxStock.demo.model.dto.PedidoDTO;
+import com.luxStock.demo.model.dto.ProductoDTO;
 import com.luxStock.demo.model.dto.SedeDTO;
 import com.luxStock.demo.model.dto.UsuarioEmpleadoDTO;
 import com.luxStock.demo.security.dto.UsuarioSecurityDTO;
+import com.luxStock.demo.services.InventarioService;
 import com.luxStock.demo.services.PedidoService;
+import com.luxStock.demo.services.ProductoService;
 import com.luxStock.demo.services.SedeService;
 import com.luxStock.demo.services.UsuarioService;
-import com.luxStock.demo.services.InventarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +23,7 @@ public class restController {
     private final UsuarioService usuarioService;
     private final PedidoService pedidoService;
     private final InventarioService inventarioService;
+    private final ProductoService productoService;
 
     @PostMapping("/guardarSede")
     public ResponseEntity<String> guardarSede(@ModelAttribute SedeDTO sedeDTO) {
@@ -59,6 +62,16 @@ public class restController {
             return ResponseEntity.ok("Pedido creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error al guardar el pedido: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/guardarProducto")
+    public ResponseEntity<String> guardarProducto(@ModelAttribute ProductoDTO productoDTO) {
+        try {
+            productoService.guardarProducto(productoDTO);
+            return ResponseEntity.ok("Producto guardado exitosamente");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error al guardar el producto: " + e.getMessage());
         }
     }
 

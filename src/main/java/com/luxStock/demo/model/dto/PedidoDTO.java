@@ -15,6 +15,7 @@ public class PedidoDTO {
     private LocalDateTime fecha;
     private Integer idEmpleado;
     private Integer idSede;
+    private Integer mesa;
     private String estado;
     private List<DetallePedidoDTO> detalles;
 }

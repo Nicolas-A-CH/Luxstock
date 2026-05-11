@@ -48,6 +48,10 @@ public class PedidoServiceImpl implements PedidoService {
                 pedidoEntity.setFecha(pedidoDTO.getFecha());
             }
 
+            if (pedidoDTO.getMesa() != null) {
+                pedidoEntity.setMesa(pedidoDTO.getMesa());
+            }
+
             if (pedidoDTO.getEstado() != null) {
                 pedidoEntity.setEstado(pedidoDTO.getEstado());
             }
@@ -102,6 +106,7 @@ public class PedidoServiceImpl implements PedidoService {
                 pedido.getFecha(),
                 pedido.getEmpleado() != null ? pedido.getEmpleado().getIdEmpleado() : null,
                 pedido.getSede() != null ? pedido.getSede().getIdSede() : null,
+                pedido.getMesa(),
                 pedido.getEstado(),
                 detallesDTO
             );

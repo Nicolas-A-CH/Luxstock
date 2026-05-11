@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    <aside th:replace="~{fragments/layout :: menu}"></aside>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h2 th:text="${productoDTO.idProducto != null ? 'Editar Producto' : 'Crear Producto'}"></h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8 col-lg-6">
+                        <div class="card card-outline card-primary">
+                            <div class="card-header">
+                                <h4 class="mb-0">Información del Producto</h4>
+                            </div>
+                            <form id="formProducto" th:action="@{/api/guardarProducto}" th:object="${productoDTO}" method="post" novalidate>
+                                <div class="card-body">
+                                    <input type="hidden" th:field="*{idProducto}" />
+
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label font-weight-bold">Nombre</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                            </div>
+                                            <input type="text" id="nombre" th:field="*{nombre}"
+                                                   class="form-control" placeholder="Ej: Mojito">
+                                            <div class="invalid-feedback">El nombre es obligatorio.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="tipo" class="form-label font-weight-bold">Tipo</label>
+                                        <select id="tipo" th:field="*{tipo}" class="form-select" required>
+                                            <option value="">Seleccione un tipo...</option>
+                                            <option value="Bebida">Bebida</option>
+                                            <option value="Comida">Comida</option>
+                                            <option value="Entrada">Entrada</option>
+                                            <option value="Postre">Postre</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
+                                        <div class="invalid-feedback">El tipo es obligatorio.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="precio" class="form-label font-weight-bold">Precio</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                            </div>
+                                            <input type="number" id="precio" th:field="*{precio}"
+                                                   class="form-control" placeholder="0.00" min="0" step="0.01">
+                                            <div class="invalid-feedback">El precio debe ser mayor a 0.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                                    <a th:href="@{/luxbar/productos}" class="btn btn-secondary">Cancelar</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+<script src="/js/formularioProducto.js"></script>
+</body>
+</html>
